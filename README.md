@@ -36,7 +36,7 @@
 한계돌파 프로젝트의 전반적인 비즈니스 로직 흐름 및 사용자의 서비스이용 흐름은 다음과 같습니다:
 
 <p align="center">
-    <img src="docs/logic_user1" alt="Logic Process & User Flow" width="700">
+    <img src="docs/logic_user1.png" alt="Logic Process & User Flow" width="700">
 
 
 
