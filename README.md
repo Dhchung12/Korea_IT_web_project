@@ -8,7 +8,7 @@
 
 - **팀명**: 한계돌파  
 - **진행 기간**: 2025년 1월 8일 ~ 2월 12일  
-- **시연 영상**: [YouTube 링크] (https://www.youtube.com/@다시시작-g5g)
+- **시연 영상**: [YouTube 링크] (https://youtu.be/klWPggb3VNA)
 
 ---
 
@@ -38,5 +38,35 @@
 <p align="center">
     <img src="docs/logic_user1.png" alt="Logic Process & User Flow" width="700">
 
+- 전체 비즈니스 로직 & 유저 플로우: [링크](https://drive.google.com/file/d/1dMtot9WwY92goMBYE-9Rx12_vqZ2RWie/view?usp=sharing)
 
+## 환경 설정
 
+### 🗺️ 지도 관련 키 설정
+
+- `MapService.java` → **29번째 줄**
+
+    ```
+    private final String REST_API_KEY = "YOUR_KAKAO_APIKEY";
+    ```
+
+- `mapLocation.html` → **13번째 줄**
+
+    ```
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_KEY"></script>
+    ```
+
+### 🖼️ 업로드 파일 경로 설정
+
+- `UploadController.java`  
+    - **40번째 줄**:
+
+    ```
+    private static final String FILE_UPLOAD_PATH = "/your/upload/path/";
+    ```
+
+    - **139번째 줄**:
+
+    ```
+    File file = new File(FILE_UPLOAD_PATH + fileName);
+    ```
