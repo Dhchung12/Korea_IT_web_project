@@ -37,7 +37,7 @@ public class UploadController {
 		List<AttachFileVO> fileList = new ArrayList();
 		
 		// tmp 경로로 설정하기(시스템마다 다름.)
-		String uploadFolder = [본인 경로];
+		String uploadFolder = "/Users/mac/Documents/upload/temp";
 		String uploadFolderPath = getFolder();
 		// yyyy/mm/dd 경로 생
 		File uploadPath = new File(uploadFolder, uploadFolderPath);
