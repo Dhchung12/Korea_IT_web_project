@@ -8,7 +8,7 @@
 
 - **팀명**: 한계돌파  
 - **진행 기간**: 2025년 1월 8일 ~ 2월 12일  
-- **시연 영상**: [YouTube 링크] (https://youtu.be/klWPggb3VNA)
+- **시연 영상**: [YouTube 링크](https://youtu.be/klWPggb3VNA)
 
 ---
 
