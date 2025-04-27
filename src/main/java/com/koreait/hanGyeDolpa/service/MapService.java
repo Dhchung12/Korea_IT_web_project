@@ -27,6 +27,7 @@ public class MapService {
 		
 		final String KAKAO_API_URL = "https://dapi.kakao.com/v2/local/search/keyword.json";
 		final String KAKAO_API_KEY = [본인 키];
+		
 
 		// 요처URL 작성
 		String getSearchKeyWord = placeName;
