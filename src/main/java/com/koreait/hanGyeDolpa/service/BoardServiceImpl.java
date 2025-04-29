@@ -31,10 +31,12 @@ public class BoardServiceImpl implements BoardService{
 	@Autowired
 	private AttachFileDAO afDao;
 	
+	// 게시글 작성자의 사용자 ID 조회 
 	private Long getBoardWriterId(Long bNo) {
 		return bDao.getUserIDinBoard(bNo);
 	}
 	
+	// 현재 로그인한 사용자 ID 조회 
 	private Long getLoginUserId(HttpSession session) {
 		Long userNo = (Long) session.getAttribute("uNo");
 		if(userNo == null) {
@@ -43,6 +45,7 @@ public class BoardServiceImpl implements BoardService{
 		return userNo;
 	}
 	
+	// 게시글 첨부파일 등록 처리 
 	private Map<String, Integer> boardRegister(BoardVO vo){
 		
 		int cntFile = 0;
@@ -51,7 +54,7 @@ public class BoardServiceImpl implements BoardService{
 		Map<String, Integer> boardRegiResultMap = new HashMap<>();
 		boardRegiResultMap.put("글", cntBoard);
 		
-		// 파일이 있으면
+		// 파일이 있으면 DB에 저장 
 		if(vo.getAttachFile() != null) {
 			for(AttachFileVO af : vo.getAttachFile()) {
 				Long bno = vo.getBno();
@@ -65,19 +68,23 @@ public class BoardServiceImpl implements BoardService{
 		return boardRegiResultMap;
 	}
 	
+	// 게시글 상세 데이터 조회 
 	private BoardVO boardRead(Long bno) {
 		return bDao.getAllDataAndUserName(bno);
 	}
 	
+	// 게시글 수정 처리 
 	private int boardModify(BoardVO vo){
 		return bDao.modify(vo);
 	}
 	
+	// 게시글 삭제 처리 (댓글 먼저 삭제 후에)
 	private int boardRemove(Long bNo) {
 		cDao.deleteComments(bNo);
 		return bDao.remove(bNo);
 	}
 	
+	// 게시글 작성자와 로그인 사용자 일치 여부 
 	@Override
 	public boolean checkUserRight(Long bNo, HttpSession session) {
 		boolean flag = false;
@@ -92,6 +99,7 @@ public class BoardServiceImpl implements BoardService{
 		return flag;
 	}
 	
+	// 게시글 등록 처리 및 메시지 생성 
 	@Override
 	public String makeRegiMsg(BoardVO vo) {
 		Map<String, Integer> msgMap = boardRegister(vo);
@@ -111,6 +119,7 @@ public class BoardServiceImpl implements BoardService{
 		return msg;
 	}
 	
+	// 게시글 수정 처리 및 메시지 생성 
 	@Override
 	public String makeModifyMsg(BoardVO vo, HttpSession session) {
 		
@@ -129,6 +138,7 @@ public class BoardServiceImpl implements BoardService{
 		return msg;
 	}
 	
+	// 게시글 삭제 처리 및 메시지 생성 
 	@Override
 	public String makeDeleteMsg(Long bNo, HttpSession session) {
 //		boolean flag = checkUserRight(bNo, session);
@@ -147,6 +157,7 @@ public class BoardServiceImpl implements BoardService{
 		return msg;
 	}
 	
+	// 댓글 등록 처리 및 메시지 생성 
 	@Override
 	public String makeCommentMsg(CommentVO comment) {
 		String msg = "등록 ";
@@ -159,6 +170,7 @@ public class BoardServiceImpl implements BoardService{
 		return msg;
 	}
 	
+	// 게시글 + 댓글 목록 조회 
 	@Override
 	public Model readBoardService(Long bno, Model model) {
 		model.addAttribute("board", boardRead(bno));
@@ -169,22 +181,26 @@ public class BoardServiceImpl implements BoardService{
 		return model;
 	}
 	
+	// 첨부파일 리스트 조회 
 	@Override
 	public List<AttachFileVO> getAttachFileList(Long bno){
 		List<AttachFileVO> afv = afDao.getAttachList(bno);
 		return afv;
 	}
-
+	
+	// 게시글 조회수 증가 
 	@Override
 	public void updateViewCount(Long bno) {
 		bDao.updateViewCount(bno);
 	}
 
+	// 전체 게시글 목록 조회 
 	@Override
 	public List<BoardVO> getUserNameList() {
 		return bDao.getUserNameList();
 	}
 
+	// 검색 조건에 맞게 필터링된 게시글 목록 조회 
 	@Override
 	public List<BoardVO> getUserNameListWithKey(String type, String keyword) {
 		return bDao.getUserNameListWithKey(type, keyword);

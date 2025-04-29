@@ -18,21 +18,25 @@ public class BoardDAO {
 	@Autowired
 	private BoardMapper mapper;
 		
-	// getList
+	// 전체 게시글 조회 
 	public List<BoardVO> getList() { return mapper.getList(); }
+	
+	// 검색 조건에 따라 필터링된 게시글 목록 조회 
 	public List<BoardVO> getListWithKey(String type, String keyword){
 		return mapper.getListWithKey(type, keyword);
 	}
 	
-	//사용자이름
+	// 게시글 + 작성자 이름 포함 목록 조회 
 	public List<BoardVO> getUserNameList(){
 		return mapper.getUserNameList();
 	}
+	
+	// 검색 조건에 따라 필터링된 게시글 + 작성자 이름 포함 목록 조회 
 	public List<BoardVO> getUserNameListWithKey(String type, String keyword){
 		return mapper.getUserNameListWithKey(type, keyword);
 	}
 	
-	// register
+	// 게시글 등록 처리 
 	public int register(BoardVO board) {
 		int cnt  = mapper.insertSelectKey(board);
 //		int cnt = mapper.insert(board);
@@ -40,32 +44,32 @@ public class BoardDAO {
 		return cnt;
 	}
 	
-	// read 
+	// 게시글 상세 조회 
 	public BoardVO read(Long bno) {
 		return mapper.get(bno);
 	}
 	
-	// modify
+	// 게시글 수정 처리 
 	public int modify(BoardVO board) {
 		return mapper.update(board);
 	}
 	
-	// remove
+	// 게시글 삭제 처리 
 	public int remove(Long bno) {
 		return mapper.delete(bno);
 	}
 	
-	// viewcnt
+	// 게시글 조회수 증가 
 	public void updateViewCount(Long bno) {
 		mapper.updateViewCount(bno);
 	}
 	
-	// 보드작성자번호
+	// 게시글 작성자 ID 조회 
 	public Long getUserIDinBoard(Long bno) {
 		return mapper.getUserIDinBoard(bno);
 	}
 	
-	// 읽을떄 사용자 이름 나오게
+	// 게시글 + 작성자 이름 포함하여 조회 
 	public BoardVO getAllDataAndUserName(Long bno) {
 		return mapper.getAllDataAndUserName(bno);
 	}

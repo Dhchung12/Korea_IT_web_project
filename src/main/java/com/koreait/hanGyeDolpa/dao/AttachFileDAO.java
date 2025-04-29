@@ -14,6 +14,7 @@ public class AttachFileDAO {
 	@Autowired
 	private AttachFileMapper AFMapper;
 	
+	// 첨부파일 등록 
 	public int insertBoardFile(AttachFileVO vo) {
 		return AFMapper.insert(vo);
 	}

@@ -4,42 +4,49 @@
 
 <mapper namespace="com.koreait.hanGyeDolpa.mapper.UserMapper">
 
+	<!--  사용자 등록  -->
     <insert id="insertUser">
         INSERT INTO USER_TABLE (USER_NO, AUTH_ID, USER_NAME, USER_IMG)
         SELECT NEXTVAL(USER_NO_seq), #{authID}, #{userName}, #{userProfilePath}
         FROM DUAL
     </insert>
     
+    <!-- 인증 ID로 사용자 번호 조회 -->
     <select id="getUserNo" resultType="Long">
     	SELECT USER_NO
     	FROM USER_TABLE
     	WHERE AUTH_ID = #{authID}
     </select>
 	
+	<!-- 사용자 번호로 사용자 정보 조회 -->
 	<select id="getUserData" resultType="userVO">
 	    SELECT USER_NO AS userNo, AUTH_ID AS authID, USER_NAME AS userName, USER_IMG AS userProfilePath
 	    FROM USER_TABLE
 	    WHERE USER_NO = #{userNo}
 	</select>
 
+	<!--  인증 ID 중복체크 -->
 	<select id="checkDupData" resultType="Boolean">
 	    SELECT AUTH_ID
 	    FROM USER_TABLE
 	    WHERE AUTH_ID = #{authID}
 	</select>
 	
+	<!-- 인증 ID로 사용자 전체 정보 조회 -->
 	<select id="getUserDataAll" resultType="userVO">
 	    SELECT USER_NO AS userNo, AUTH_ID AS authID, USER_NAME AS userName, USER_IMG AS userProfilePath
 	    FROM USER_TABLE
 	    WHERE AUTH_ID = #{authID}
    	</select>
    	
+   	<!-- 사용자 번호로 전체 정보 조회 -->
    	<select id="getUserDataAllByNo" resultType="userVO">
     	SELECT USER_NO AS userNo, AUTH_ID AS authID, USER_NAME AS userName, USER_IMG AS userProfilePath
 	    FROM USER_TABLE
 	    WHERE USER_NO = #{userNo}
    	</select>
    	
+   	<!-- 사용자 이름/프로필 수정 -->
    	<update id="updateUserData">
    		UPDATE USER_TABLE
    		SET USER_NAME = #{userName},

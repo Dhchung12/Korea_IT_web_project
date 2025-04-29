@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--  연결할 인터페이스 정보를 namespace에 기술 -->
 <mapper namespace="com.koreait.hanGyeDolpa.mapper.BoardMapper">
+	<!-- 검색조건 SQL -->
 	<sql id="criteria">
 		<if test="type != null and keyword != null">
 			<trim prefix="AND ">
@@ -17,10 +18,13 @@
 		</if>
 	</sql>
 	
+	<!-- 게시글 등록  -->
 	<insert id="insert">
 		INSERT INTO BOARD_TABLE(BOARD_NO, BOARD_TITLE,BOARD_CONTENT,USER_ID)
 		VALUES(NEXTVAL(BOARD_NO_seq),#{title},#{content},#{userId})
 	</insert>
+	
+	<!-- bno가 필요한 경우  -->
 	<insert id="insertSelectKey">
 		<selectKey keyProperty="bno" order="BEFORE" resultType="Long">
 			SELECT NEXTVAL(BOARD_NO_seq) FROM DUAL
@@ -28,7 +32,7 @@
 		INSERT INTO BOARD_TABLE(BOARD_NO, BOARD_TITLE,BOARD_CONTENT,USER_ID)
 		VALUES( #{bno},#{title},#{content},#{userId})
 	</insert>
-	
+	'<!-- 특정 게시글 조회  -->
 	<select id="get" resultType="boardVO">
 		<![CDATA[
 		SELECT BOARD_NO AS bno,
@@ -43,6 +47,7 @@
 		]]>
 	</select>
 	
+	<!-- 전체 게시글 목록 조회  -->
 	<select id="getList" resultType="boardVO">
 		<![CDATA[
 		SELECT BOARD_NO AS bno,
@@ -57,6 +62,7 @@
 		]]>
 	</select>
 	
+	<!-- 검색조건에 필터링된 게시글 목록 조회 -->
 	<select id="getListWithKey" resultType="boardVO">
 		<![CDATA[
 		SELECT BOARD_NO AS bno,
@@ -72,28 +78,35 @@
 		<include refid="criteria"></include>
 	</select>
 	
+	<!-- 게시글 수정 -->
 	<update id="update">
 		UPDATE BOARD_TABLE
 		SET BOARD_TITLE = #{title}, BOARD_CONTENT = #{content}, <!-- , USER_ID = #{userId} -->
 			BOARD_UPDATEDATE = SYSDATE()
 		WHERE BOARD_NO= #{bno}
 	</update>
+	
+	<!-- 게시글 조회수 증가 -->
 	<update id="updateViewCount">
 		UPDATE BOARD_TABLE
 		SET BOARD_CNT = BOARD_CNT + 1
 		WHERE BOARD_NO = #{bno}
 	</update>
+	
+	<!-- 게시글 삭제 -->
 	<delete id="delete">
 		DELETE FROM BOARD_TABLE
 		WHERE  BOARD_NO = #{bno}
 	</delete>
 	
+	<!-- 게시글 작성자 ID 조회 -->
 	<select id="getUserIDinBoard">
 		SELECT USER_ID
 		FROM BOARD_TABLE
 		WHERE BOARD_NO = #{bno}
 	</select>
 	
+	<!-- 작성자 이름이 포함된 게시글 목록 조회 -->
 	<select id="getUserNameList" resultMap="getUserNameListMap">
 	    SELECT B.BOARD_NO, 
 	           B.BOARD_TITLE, 
@@ -108,6 +121,7 @@
 	    ORDER BY B.BOARD_REGDATE DESC
 	</select>
 	
+	<!-- 검색조건에 필터링된 작성자 이름이 포함된 게시글 목록 조회 -->
 	<select id="getUserNameListWithKey" resultMap="getUserNameListMap">
 	    <![CDATA[
 	    SELECT B.BOARD_NO,
@@ -125,6 +139,7 @@
 	    <include refid="criteria"></include>
 	</select>
 	
+	<!-- 게시글 상세 + 작성자 이름 조회 -->
 	<select id="getAllDataAndUserName" resultMap="getUserNameListMap">
 		<![CDATA[
 	    SELECT B.BOARD_NO,

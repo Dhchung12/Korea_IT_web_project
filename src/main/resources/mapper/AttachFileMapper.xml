@@ -2,11 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--  연결할 인터페이스 정보를 namespace에 기술 -->
 <mapper namespace="com.koreait.hanGyeDolpa.mapper.AttachFileMapper">
+	<!-- 첨부파일 등 -->
 	<insert id="insert">
 		INSERT INTO BOARD_ATTACH(FILENAME, UUID, UPLOADPATH, IMAGE, VIDEO, BOARD_NO)
 		VALUES (#{fileName}, #{uuid}, #{uploadPath}, #{image}, #{vid}, #{bno} )
 	</insert>
 	
+	<!-- 게시글 번호로 첨부파일 목록 조회 -->
 	<select id="findByBno" resultType="attachFileVO">
 		SELECT BOARD_NO AS BNO, FILENAME, UUID, UPLOADPATH, IMAGE, VIDEO AS VID FROM BOARD_ATTACH WHERE BOARD_NO = #{bno}
 	</select>

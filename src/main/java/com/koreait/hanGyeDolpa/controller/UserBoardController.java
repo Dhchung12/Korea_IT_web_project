@@ -28,21 +28,21 @@ public class UserBoardController {
 	@Autowired
 	private UserService uService;
 	
-	// register 화면 호출
+	// 게시글 등록 폼 이동 (로그인 확인) 
 	@GetMapping("register")
 	public String register(HttpSession session, RedirectAttributes rttr ) {
 		boolean flag = uService.checkUserLogin(session);
-		
+		// 로그인 확인 
 		if(flag) {
 			return "board/register";
 		}
-		
 		else {
 			rttr.addFlashAttribute("msg", "로그인 정보가 없습니다.\n로그인 후 작성해주세요");
 			return "redirect:/board/list";
 		}
 	}
 	
+	// 게시글 등록 처리 
 	@PostMapping("register")
 	public String write(BoardVO board, RedirectAttributes rttr) {
 		String msg = bService.makeRegiMsg(board);
@@ -52,7 +52,7 @@ public class UserBoardController {
 		return "redirect:/board/list";
 	}
 	
-	// localhost:10000/board/remove?bno=N
+	// 게시글 삭제 처리 
 	@RequestMapping("remove")
 	public String remove(Long bno, RedirectAttributes rttr, HttpSession session) {
 		
@@ -62,7 +62,7 @@ public class UserBoardController {
 		return "redirect:/board/list";
 	}
 	
-	// localhost:10000/board/modify?bno=N -> 페이지 호출
+	// 게시글 수정 폼 이동 
 	@GetMapping("modify")
 	public String modify(Long bno, Model model, HttpSession session) {
 
@@ -82,7 +82,7 @@ public class UserBoardController {
 //			return "redirect:/board/list";
 //		}
 	}
-	
+	// 게시글 수정 처리 
 	@PostMapping("modify")
 	public String modify(BoardVO board, RedirectAttributes rttr, HttpSession session) {
 		String msg = bService.makeModifyMsg(board, session);
@@ -92,6 +92,7 @@ public class UserBoardController {
 		return "redirect:/board/read?bno="+board.getBno();
 	}
 	
+	// 게시글 등록 처리 
 	@PostMapping("comment")
     public String addComment(CommentVO comment, RedirectAttributes rttr, HttpSession session) {
 		boolean flag = uService.checkUserLogin(session);
@@ -110,6 +111,7 @@ public class UserBoardController {
         return "redirect:/board/read?bno=" + comment.getBno();
     }
 	
+	// 게시글 작성자와 로그인 사용자 일치 여부 확인 
 	@GetMapping("/checkReaderANDUserNo")
 	@ResponseBody
 	public String checkReaderANDUserNo(HttpSession session, Long bno) {
