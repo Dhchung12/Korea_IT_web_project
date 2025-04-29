@@ -98,6 +98,7 @@ public class UserBoardController {
 		boolean flag = uService.checkUserLogin(session);
 		String msg = "댓글: ";
 		
+		// 게시글 작성자 ID = 세션에 로그인된 ID?
 		if(flag) {
 			comment.setUserId((Long)session.getAttribute("uNo"));
 			msg += bService.makeCommentMsg(comment);
