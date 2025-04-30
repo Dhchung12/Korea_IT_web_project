@@ -2,13 +2,14 @@
  * 지도부분~~~
  */
 
-// 기본 검색 위치 -> 역삼역
+	// 기본 검색 위치 -> 역삼역
 	var mapCenter = new kakao.maps.LatLng(37.500725285, 127.036600396);
 	
 	var markers = [];
 	
 	var mapContainer = document.getElementById('map') // 지도를 표시할 div 
 	
+	// 지도 초기 설정 옵션 
 	var defaultOption = {
 	        center: mapCenter, // 지도의 중심좌표
 	        level: 3, // 지도의 확대 기본값: 3
@@ -25,26 +26,16 @@
 	// 처음 지도 생성
 	var map = new kakao.maps.Map(mapContainer, defaultOption); 
 	
-	// 마커 관련
-	// var centerMarker = new kakao.maps.Marker({
-	//    map: map,
-	//    position: new kakao.maps.LatLng(map.getCenter())
-	//});
-	//markers.push(centerMarker);
-	
-	// 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+	// 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성
 	var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 	
-	// 키워드로 장소를 검색합니다
+	// 키워드로 장소를 검색 (클라이밍)
 	searchPlaces();
 	
-	// 검색 함수
+	// 장소 검색 함수
 	function searchPlaces() {
 		// 장소 검색 객체
 		var ps = new kakao.maps.services.Places(map);
-		
-		// 지도 범위 재설정
-		//map.relayout();
 		
 		// 장소 검색 옵션(추가중)
 		let NLevel = map.getLevel();
@@ -56,17 +47,15 @@
 				size: 10
 		}
 		
-		// console.log("Place Function Called! centerValue: " + map.getCenter() + "| reLevel: " + map.getLevel());
-	    
 		// 검색객체 -> 콜백함수 -> Data 처리
 	    ps.keywordSearch("클라이밍", placesSearchCB, options); 
 	}
 	
-	// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+	// 장소검색이 완료됐을 때 호출되는 콜백함수 
 	function placesSearchCB(data, status, pagination) {
 	    if (status === kakao.maps.services.Status.OK) {
 
-	    	// 정상적으로 검색 완료 -> 마커 파바박
+	    	// 정상적으로 검색 완료 -> 마커 표시 
 	        displayPlaces(data);
 	
 	    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -82,7 +71,7 @@
 	    }
 	}
 	
-	// 검색 결과 목록과 마커를 표출하는 함수입니다
+	// 검색 결과 목록과 마커를 표출하는 함수
 	function displayPlaces(places) {
 	
 	    var listEl = document.getElementById('placesList'), 
@@ -91,20 +80,20 @@
 	    bounds = new kakao.maps.LatLngBounds(), 
 	    listStr = '';
 	    
-	    // 검색 결과 목록에 추가된 항목들을 제거합니다
+	    // 검색 결과 목록에 추가된 항목들을 제
 	    removeAllChildNods(listEl);
 	
-	    // 지도에 표시되고 있는 마커를 제거합니다
+	    // 지도에 표시되고 있는 마커를 제거
 	    removeMarker();
 	    
 	    var marke0Center = map.getCenter();
 	    
 	    for (var i=0; i<places.length; i++ ) {
 	
-	        // 마커를 생성하고 지도에 표시합니다
+	        // 마커를 생성하고 지도에 표시
 	        var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
 	            marker = addMarker(placePosition, i), 
-	            itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
+	            itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성
 			
 	        // 중심 마커 설정 및 
             if(i == 0){
@@ -124,10 +113,9 @@
 	        	
 	            kakao.maps.event.addListener(marker, 'mouseover', function() {
 	                displayInfowindow(marker, title);
-	                //console.log("distance: " + distance);
 	            });
 	            
-	            // KEC) 마커 누르면 함수
+	            // 마커 누르면 함수
 	            kakao.maps.event.addListener(marker, 'click', function(){
 	            	getPlaceUrl(title, placePosition.getLng(), placePosition.getLat());
 	            });
@@ -136,7 +124,7 @@
 	                infowindow.close();
 	            });
 	
-	            // 마커 기준 지도 중심 이동 -> 애니메이션시 onover함수 써야함? 한 칸 단위로 이동하려면?
+	            // 마커 기준 지도 중심 이동 
 	            itemEl.onmouseover =  function () {
 	            	
 	                displayInfowindow(marker, title);
@@ -164,17 +152,15 @@
 	    listEl.appendChild(fragment);
 	    menuEl.scrollTop = 0;
 	
-	    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다 
-	    // -> 지도 범위 재설정 과정에서 레벨링 및 좌표 변경됨을 확인
-	    // 마커들이 넘 많아서 지도 레벨이 높아지는 거임!!!
+	    // 검색된 장소 위치를 기준으로 지도 범위를 재설정
+	    // -> 지도 범위 재설정 과정에서 레벨링 및 좌표 변경됨 
 	    map.setBounds(bounds);
 	   
 	    // 이후 강제적으로 센터를 맞춤 - 마커의 1번 녀석
 	    map.setCenter(marke0Center);
-	    //map.setLevel(5);
 	}
 	
-	// 검색결과 항목을 Element로 반환하는 함수입니다
+	// 검색결과 항목을 Element로 반환하는 함수
 	function getListItem(index, places) {
 	
 	    var el = document.createElement('li'),
@@ -198,9 +184,9 @@
 	    return el;
 	}
 	
-	// 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+	// 마커를 생성하고 지도 위에 마커를 표시하는 함수
 	function addMarker(position, idx, title) {
-	    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+	    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지
 	        imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
 	        imgOptions =  {
 	            spriteSize : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
@@ -213,13 +199,13 @@
 	            image: markerImage 
 	        });
 	
-	    marker.setMap(map); // 지도 위에 마커를 표출합니다
-	    markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+	    marker.setMap(map); // 지도 위에 마커를 표출
+	    markers.push(marker);  // 배열에 생성된 마커를 추가
 	
 	    return marker;
 	}
 	
-	// 지도 위에 표시되고 있는 마커를 모두 제거합니다
+	// 지도 위에 표시되고 있는 마커를 모두 제거합
 	function removeMarker() {
 	    for ( var i = 0; i < markers.length; i++ ) {
 	        markers[i].setMap(null);
@@ -227,13 +213,13 @@
 	    markers = [];
 	}
 	
-	// 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
+	// 검색결과 목록 하단에 페이지번호를 표시는 함수
 	function displayPagination(pagination) {
 	    var paginationEl = document.getElementById('pagination'),
 	        fragment = document.createDocumentFragment(),
 	        i; 
 	
-	    // 기존에 추가된 페이지번호를 삭제합니다
+	    // 기존에 추가된 페이지번호를 삭제
 	    while (paginationEl.hasChildNodes()) {
 	        paginationEl.removeChild (paginationEl.lastChild);
 	    }
@@ -258,8 +244,8 @@
 	    paginationEl.appendChild(fragment);
 	}
 	
-	// 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
-	// 인포윈도우에 장소명을 표시합니다
+	// 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수
+	// 인포윈도우에 장소명을 표시
 	function displayInfowindow(marker, title) {
 	    var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
 	
@@ -267,7 +253,7 @@
 	    infowindow.open(map, marker);
 	}
 	
-	 // 검색결과 목록의 자식 Element를 제거하는 함수입니다
+	 // 검색결과 목록의 자식 Element를 제거하는 함수
 	function removeAllChildNods(el) {   
 	    while (el.hasChildNodes()) {
 	        el.removeChild (el.lastChild);
@@ -276,22 +262,17 @@
 	 
 	 // 마커나 아이템 누르면 URL 데이터
 	 function getPlaceUrl(title, Xposition, Yposition){
-		 //console.log("Fetch 데이터 전송 시작");
 		 
 		 let str = "/clickMarker?placeName=" + title + "&Xposition="+Xposition+"&Yposition="+Yposition;
 		 
 		 clickedPlaceDiv.innerHTML = "Data Loading...";
 		 
-		 //console.log("FetchURL -> "+str);
-		 
          fetch(str)
          .then(resp => resp.text())
-         //.then(data => console.log("Function Called URL-> " + data));
 	 	 .then(data => {
 	 		
 	 		// TODO - 개느려.. 어떤 과정으로 개느려지는가
 	        var iframeStr = '<iframe style="width: 100%; height: 100%; transform: scale(0.99); transform-origin: top left;" name="iframe" src="' + data + '"></iframe>';
-	        //console.log(iframeStr);
 	        
 	        clickedPlaceDiv.innerHTML = iframeStr;
 	        
@@ -341,9 +322,6 @@
 	 // 지도 중심 좌표 옮기고 재검색
 	 function reFreshPlace(){
 		console.log("중심좌표 이동 재검색");
-		//var reCenter = map.getCenter();
-		//var relevel = map.getLevel();
-		//console.log("Re Fresh Called!" + reCenter + "Level: " + relevel);
 		
 		// 검색 객체에 지도 객체를 넣고 재검색으로 코드 변경
 		searchPlaces();
@@ -358,7 +336,6 @@
 		new daum.Postcode({
 		        oncomplete: function(data) {
 		        	console.log("Postcode 시작")
-		            //console.log(data.address);
 		        	searchKeyWord = data.address;
 		        	searchByKeyword(searchKeyWord);
 		        }
@@ -378,7 +355,6 @@
 		var callback = function(result, status) {
 		    if (status === kakao.maps.services.Status.OK) {
 		    	console.log("정상 검색 완료");
-		    	//console.log("Y, X => " + result[0].y + ", " + result[0].x);
 		    	
 		    	// 좌표로 지도 센터 이동	
 		        map.setCenter(new kakao.maps.LatLng(result[0].y,result[0].x));

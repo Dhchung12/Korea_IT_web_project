@@ -20,7 +20,14 @@ public class MapService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	// TODO - 코드 최적화하기!!!!!!!!!!!! - 지금 개판이야!!!!!!!
+	/**
+	 * 카카오 장소 ID를 조회해 place.map.kakao.com/{id} URL을 구성해 반환
+	 * 
+	 *  placeName 검색할 장소 이름
+	 *  Xposition 경도
+	 *  Yposition 위도
+	 *  place.kakao.com/{placeId} 형태의 URL
+	 */
 	public String getPlaceID(String placeName, double Xposition, double Yposition) {
 		
 		String placeID = "http://place.map.kakao.com/";
@@ -33,7 +40,7 @@ public class MapService {
 		String getSearchKeyWord = placeName;
 		String reqUrl = KAKAO_API_URL +
         		"?page=1" +
-        		"&size=10" + //일단 동일값 10개 받기 -> 어케 처리할까
+        		"&size=10" + 
         		"&sort=accuracy" +
                 "&query=" + getSearchKeyWord +
                 "&y=" + Yposition +
@@ -42,17 +49,16 @@ public class MapService {
 				
 		log.info("Request URL: {}", reqUrl);
 		
-		//헤더
+		// 헤더 설정 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "KakaoAK " + KAKAO_API_KEY);
 		HttpEntity<Void> entity = new HttpEntity<>(headers);
 		
-		//호출
+		// API 호출
 		ResponseEntity<Map> response = restTemplate.exchange(reqUrl, HttpMethod.GET, entity, Map.class);
 		log.info("Resp-> " + response.toString());
 		
 		try {
-			// TODO - List형 말고 그냥 파싱해서 String으로 가져오고 싶다
 			List<Map<String, Object>> documents = (List<Map<String, Object>>) response.getBody().get("documents");
 			
 			if(documents != null && !documents.isEmpty()) {
@@ -65,10 +71,6 @@ public class MapService {
 					log.info("placeData: "+ placeData);
 					// TODO 너무 별로인 코드. 좀 더 다듬기
 					placeID+= placeData;
-//				}
-//				else {
-					// TODO - 만약 이름이 중복이라면..?
-//				}
 			}
 		}
 		catch (ClassCastException e) {
@@ -82,3 +84,35 @@ public class MapService {
 		return placeID;
 	}
 }
+/**
+ * 아래코드로 확인해보고 대체 
+public String getPlaceID(String placeName, double x, double y) {
+    final String API_URL = "https://dapi.kakao.com/v2/local/search/keyword.json";
+    final String KAKAO_API_KEY = "[본인 키]";
+
+    String url = API_URL +
+        "?page=1&size=10&sort=accuracy" +
+        "&query=" + placeName +
+        "&x=" + x +
+        "&y=" + y;
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "KakaoAK " + KAKAO_API_KEY);
+    HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+    try {
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+        List<Map<String, Object>> docs = (List<Map<String, Object>>) response.getBody().get("documents");
+
+        if (docs != null && !docs.isEmpty()) {
+            String placeId = (String) docs.get(0).get("id");
+            return "http://place.map.kakao.com/" + placeId;
+        }
+    } catch (Exception e) {
+        log.error("카카오 장소 ID 조회 실패", e);
+    }
+
+    return "http://place.map.kakao.com/";
+}
+
+ */

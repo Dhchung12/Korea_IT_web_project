@@ -16,7 +16,7 @@ public class MapAPIController {
 	@Autowired
 	private MapService mService;
 	
-	// 마커 누르면 호출
+	// 마커 누르면 호출되는 API
 	@ResponseBody
 	@GetMapping("/clickMarker")
 	public String clickMarker(String placeName, double Xposition, double Yposition) {
