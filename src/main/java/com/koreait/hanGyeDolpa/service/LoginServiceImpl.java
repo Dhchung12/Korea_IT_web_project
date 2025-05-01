@@ -43,6 +43,7 @@ public class LoginServiceImpl{
     @Value("${kakao.user-url:https://kapi.kakao.com}")
     private String KAUTH_USER_URL_HOST;
 
+    // 인가 코드로 액세스 토큰 요청 
     public String getAccessTokenFromKakao(String code) {
         KakaoTokenResponseDto kakaoTokenResponseDto = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -57,11 +58,11 @@ public class LoginServiceImpl{
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
                 .bodyToMono(KakaoTokenResponseDto.class)
                 .block();
-
-//        log.info("Access Token: {}", kakaoTokenResponseDto.getAccessToken());
+        
         return kakaoTokenResponseDto.getAccessToken();
     }
     
+    // 액세스 토큰으로 사용자 정보 요청 후 세션에 저장 
     public void getUserInfo(String accessToken, HttpSession session) {
 
         KakaoUserInfoResponseDto userInfo = WebClient.create(KAUTH_USER_URL_HOST)
@@ -83,7 +84,7 @@ public class LoginServiceImpl{
         insertUserData2DB(userInfo, session);
     }
     
-    // 로그아웃
+    // 카카오 API를 통해 로그아웃 
     public void serviceLogout(String accessToken, HttpSession session) {
         final String reqUrl = "https://kauth.kakao.com/oauth/logout";
 
@@ -106,7 +107,7 @@ public class LoginServiceImpl{
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             }
 
-            // 3. 결과 메시ㅣ지 만들기
+            // 3. 결과 메시지 만들기
             String line = "";
             StringBuilder responseSb = new StringBuilder();
             while((line = br.readLine()) != null){
@@ -122,7 +123,7 @@ public class LoginServiceImpl{
         }
     }
     
-    // 로그인한 사용자 처리 함수
+    // 로그인한 사용자 정보를 DB에 삽입 
     private void insertUserData2DB(KakaoUserInfoResponseDto userInfo, HttpSession session) {
         
     	String authId = String.valueOf(userInfo.getId());
@@ -131,27 +132,20 @@ public class LoginServiceImpl{
     	
     	log.info("AuthID kakao -> " + authId);
     	
-        // TODO 체크하기 ->
-        // 매퍼에서 AuthId를 기반으로 동일한 사용자가 있는가?
-        // if(true-이름일치) -> 기존의 user의 데이터가 전부 일치하나?(1. 프로필 2. 이름)
-        // if(true-완전일치) -> AuthId를 기반으로 uNo 설정하기
-        // else(false-안완전일치) -> AuthId를 기반으로 사용자 데이터 수정하기
-        // else(false-새로운사람) -> insertUser(userDto) 하기
-        
         // 1. AuthID로 사용자 있는지 확인
         Boolean userFlag = userMapper.checkDupData(authId);
         
         if(userFlag == null) { userFlag = false; }
         
         // 2. 중복사용자있나?
-        	//2-1. 있음
+        //2-1. 중복사용자가 있는 경우 
         if(userFlag == true) {
-    		//3. 변경사항 있나?
+    		//3. 변경사항 있는지 확인 
         	UserVO existUserVo = userMapper.getUserDataAll(authId);
         	checkUserDataIsEqual(existUserVo, userName, imgPath);
         }
         
-        	//2-2.없음
+        // 2-2 중복사용자가 없는 경우 -> 새로운 사용자 
         else {
         	// 신입 저장하기
         	UserVO userVO = new UserVO();

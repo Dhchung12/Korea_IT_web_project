@@ -26,45 +26,33 @@ public class KakaoLoginController {
 
 	@Autowired
 	private final LoginServiceImpl kakaoService;
-
+	
+	// 카카오 인증 완료 후 리디렉션되는 콜백 URL
+	// 인가 코드를 받아서 토큰 요청, 사용자 정보 조회 수행 
     @GetMapping("/callbacks")
     public ResponseEntity<Void> callback(@RequestParam("code") String code, HttpSession session) throws IOException {
         
-    	// 엑세스 토큰 콜백 관련 -> 3단계 진행 후 메인페이지로 넘김
+    	// 인가 코드로 카카오에 액세스 토큰 요
     	String accessToken = kakaoService.getAccessTokenFromKakao(code);
+    	
+    	// 세션에 액세스 토큰 저장 
     	session.setAttribute("aT", accessToken);
     	
     	
-        // TODO -> 만약 오류가 난다면?
+        // 액세스 토큰으로 사용자 정보 요청 및 세션 저장 
         kakaoService.getUserInfo(accessToken, session);
-        
-        // TODO -> 
-        	//if(오류) -> 뭔가 안된 alert + 메인페이지(uNo => 0)
-        	//else(true) -> 성공 alert + 메인페이지(uNo => uNo)
-    	
-        //응답 헤더
+
+        // 로그인 후 메인 페이지로 이동 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/"));
         
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
         
-//        return "redirect:/";
     }
     
     @GetMapping("/logoutCallback")
     public ResponseEntity<Void> logoutCallback(HttpSession session) {
-        
-//    	// 엑세스 토큰 콜백 관련 -> 3단계 진행 후 메인페이지로 넘김
-//    	String accessToken = kakaoService.getAccessTokenFromKakao(code);
-//    	session.setAttribute("aT", accessToken);
-//    	
-//        // TODO -> 만약 오류가 난다면?
-//        kakaoService.getUserInfo(accessToken, session);
-//        
-//        // TODO -> 
-//        	//if(오류) -> 뭔가 안된 alert + 메인페이지(uNo => 0)
-//        	//else(true) -> 성공 alert + 메인페이지(uNo => uNo)
-//    	
+
         //응답 헤더
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/"));
