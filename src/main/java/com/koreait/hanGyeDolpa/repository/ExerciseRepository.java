@@ -11,11 +11,13 @@ import com.koreait.hanGyeDolpa.entity.Exercise;
 
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
+	// 사용자별 + 날짜별 운동 조회 
 	List<Exercise> findByUserNoAndExerciseDate(Long userNo, String exerciseDate);
 	
+	// 특정 날짜 운동 1건 조회 
 	Exercise findByExerciseDate(String exerciseDate);
 
-	// 전체 데이터 전부 다(날짜기준)
+	// 날짜 범위 내 운동 데이터 전체 조회 (대시보드)
 	@Query("SELECT e FROM Exercise e WHERE e.exerciseDate BETWEEN :startDate AND :endDate AND e.userNo = :userNo")
 	List<Exercise> findAllByDateRange(
 		@Param("userNo") Long userNo,

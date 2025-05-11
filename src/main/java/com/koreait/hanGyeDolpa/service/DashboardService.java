@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DashboardService {
 
-    // TODO - 코드 최적화!!! 지금 너무 코드가 멍청해!!!!!
 
 	@Autowired
 	private ExerciseRepository exRepo;
@@ -30,16 +29,19 @@ public class DashboardService {
     
     //1-1. 달력용
     public List<checkDataForCalendar> getCalendarData(String startDate, String endDate, Long userNo) {
-
+    	// 전체 데이터 불러오기 
     	List<Exercise> exercises = getAllExercises(startDate, endDate, userNo);
 
     	
         Map<String, Long> groupedData = exercises.stream()
-            .collect(Collectors.groupingBy(Exercise::getExerciseDate, Collectors.summingLong(Exercise::getClimbCount)));
+            .collect(Collectors.groupingBy(
+            		Exercise::getExerciseDate, // 날짜를 기준으로 묶는다.
+            		Collectors.summingLong(Exercise::getClimbCount) // 그 그룹 안에서 ClimbCount를 전부 더함 
+            		));
 
-        return groupedData.entrySet().stream()
+        return groupedData.entrySet().stream() // Map -> stream
             .map(entry -> new checkDataForCalendar(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()); // 최종적으로 List<checkDataForCalendar>로 변환 
     }
     
     //1-2. 이번달 운동 시간 총량

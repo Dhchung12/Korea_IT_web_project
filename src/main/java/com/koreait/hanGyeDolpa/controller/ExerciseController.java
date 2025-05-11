@@ -29,14 +29,12 @@ public class ExerciseController {
     private ExerciseService eService;
     
     @PostMapping("/save")
-    public String saveExerciseRecord(
-    									@RequestBody ExerciseRecordRequest request
-    									){
-        // 컨트롤러 부분은 비즈니스 로직이 없는게 권장됩니다.(SOLID SRP/OCP/DIP)
-    	// 따라서 아래 내용은 전부 서비스 단으로 옮기겠습니다.
-    	eService.saveExerciseData(request);
+    public String saveExerciseRecord(@RequestBody ExerciseRecordRequest request	){
+        // 클라이언트에서 전송된 JSON 요청을 ExerciseRecordRequest DTO로 매핑 
+    	
+    	eService.saveExerciseData(request); // 실제 저장 로직은 서비스에서 처리 
         
-        return "redirect:/dashboard";
+        return "redirect:/dashboard"; // 저장 후 대시보드로 이동 
     }
     
     @PostMapping("/records")

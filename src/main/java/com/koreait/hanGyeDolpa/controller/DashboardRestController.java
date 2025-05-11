@@ -24,6 +24,7 @@ public class DashboardRestController {
 	@Autowired
 	private DashboardService dashbService;
 	
+	// 운동 기록 유무를 날짜별로 조회 
 	@GetMapping("/getCalendarData")
 	public List<checkDataForCalendar> getCalendarData(
 										@RequestParam String startDate,
@@ -36,6 +37,7 @@ public class DashboardRestController {
 		return dashbService.getCalendarData(startDate, endDate, userNo);
 	}
 	
+	// 운동 통계를 운동 장소별, 단계별 형태로 조회 
 	@GetMapping("/getComboChartData")
 	public ResponseEntity<Map<String, Map<Integer, Integer>>> getComboChartData(
 										@RequestParam String startDate,
@@ -51,6 +53,7 @@ public class DashboardRestController {
 		return ResponseEntity.ok(totalValue);
 	}
 	
+	// 총시간, 칼로리, 횟수 등 요약 데이터 조회 
 	@GetMapping("/getTotalTimeData")
 	public Map<String, Map<String, Integer>> getTotalTimeData(
 										@RequestParam String startDate,
@@ -61,7 +64,7 @@ public class DashboardRestController {
 		return dashbService.getTotlaData(startDate, endDate, userNo);
 		
 	}
-	
+	 // 가장 높은 운동 점수 기등 등 조회 
 	@GetMapping("/getHighstScoreData")
 	public Map<String, Integer> getHighstScoreData(
 										@RequestParam String startDate,
@@ -75,7 +78,7 @@ public class DashboardRestController {
 	@GetMapping("/setSessionStorage")
 	public String setSessionStorage(HttpSession session) {
 		
-		// 서버 -> 클라이어느 세션
+		// 사용자 확인(서버 -> 클라이어느 세션)
 	    Long uNoValue = getUserNoInHttpSession(session);
 	    return uNoValue != null ? uNoValue.toString() : "";
 	}

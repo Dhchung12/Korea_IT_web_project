@@ -19,6 +19,7 @@ public class ExerciseService {
 	public boolean saveExerciseData(ExerciseRecordRequest request) {
 	    
 		try {
+			// ExerciseRecordRequest -> Exercise 객체로 변환 
 	        Exercise record = new Exercise();
 	        record.setUserNo(request.getUserId());
 	        record.setClimbPlace(request.getExercisePlace());
@@ -28,9 +29,9 @@ public class ExerciseService {
 	        record.setExerciseDate(request.getExerciseDate());
 	        record.setClimbKcal(request.getExerciseKcal());
 
-	        Exercise savedRecord = eRepo.save(record);
+	        Exercise savedRecord = eRepo.save(record); // DB에 저장 
 	        
-	        // 성공 여부 확인
+	        // 성공 여부 확인 후 반환 
 	        return savedRecord != null;  
 
 	    } catch (Exception e) {
