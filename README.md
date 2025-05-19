@@ -30,6 +30,7 @@
 
 <!-- ✅ 외부 API -->
 ![Kakao Maps](https://img.shields.io/badge/Kakao%20Maps-FFCD00?style=for-the-badge&logo=kakaotalk&logoColor=black)
+![Kakao OAuth](https://img.shields.io/badge/Kakao_OAuth-FFCD00?style=for-the-badge&logo=kakaotalk&logoColor=black)
 
 
 ---
